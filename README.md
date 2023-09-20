@@ -9,7 +9,9 @@ The source library can be found in the main folder of this project (pico_neopixe
 
 ## Installation
 Clone this repo to you local system using
-<code>git clone "https://github.com/paulmreese/pico_neopixel_animations"</code>
+````
+git clone https://github.com/paulmreese/pico_neopixel_animations
+````
 
 
 ## Building Examples
