@@ -39,9 +39,13 @@ uint16_t LED_COUNT = 5;
 std::string PIXEL_ORDER = "3 2 1 0 4 ";
 ````
 2. Declare our NeoPixelStrip object(name `npStrip`):
-        `NeoPixelStrip npStrip(LED_COUNT, LED_PIN, PIXEL_ORDER);`
+````
+NeoPixelStrip npStrip(LED_COUNT, LED_PIN, PIXEL_ORDER);
+````
 3. Send desired animation instructions:
-        `npStrip.test_loop();`
+````
+npStrip.test_loop();
+````
 
 ## Library documentation
 See the Adafruit Neopixel library documentation on the various resources.
