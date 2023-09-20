@@ -33,13 +33,15 @@ nmake
 ## Code Setup
 NeoPixels may be connected to any GPIO pin. Once you are confident in the wiring and pin choices for your NeoPixel strand, you'll need to construct a NeoPixelStrip object to send instructions to, as shown:
 1. Declare your LED pin, count(amount of LEDs), and pixel order. The `PIXEL_ORDER` defines the order the NeoPixels should follow, relative to the way they are electrically sequenced(The first NeoPixel of the electrical sequence would automatically be number "0", next is "1", etc.). **The string should terminate with a trailing space!!**
-        uint16_t LED_PIN =  28;
-        uint16_t LED_COUNT = 5;
-        std::string PIXEL_ORDER = "3 2 1 0 4 ";
+````
+uint16_t LED_PIN =  28;
+uint16_t LED_COUNT = 5;
+std::string PIXEL_ORDER = "3 2 1 0 4 ";
+````
 2. Declare our NeoPixelStrip object(name `npStrip`):
-        NeoPixelStrip npStrip(LED_COUNT, LED_PIN, PIXEL_ORDER);
+        `NeoPixelStrip npStrip(LED_COUNT, LED_PIN, PIXEL_ORDER);`
 3. Send desired animation instructions:
-        npStrip.test_loop();
+        `npStrip.test_loop();`
 
 ## Library documentation
 See the Adafruit Neopixel library documentation on the various resources.
