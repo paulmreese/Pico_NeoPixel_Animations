@@ -1,2 +1,4 @@
-# Our handy .gitignore for automation ease
+# Ignore example build directory
 examples/build
+# Ignore system files
+.DS_Store
