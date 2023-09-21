@@ -53,8 +53,7 @@ npStrip.test_loop();
 ````
 
 ## Library documentation
-This section needs to be improved to include a general description of the types of functions offered by the library, as well as the specific functions that are available as animations.
-This library is intended to provide animation functions that are easy to access from an external project. The available functions fall generally into animation functions and their helper functions. An explanation of the purpose of each one is provided in the [header file of this project](pico_neopixel_animations.h)
+This library is intended to provide animation functions that are easy to access from an external project. The available functions fall generally into two types: animation functions and their helper functions. An explanation of the purpose of each individual function is provided in the [header file of this project](pico_neopixel_animations.h)
 
 ## Resources specific to the Adafruit Neopixel library
 See [the Adafruit Neopixel library documentation](https://github.com/adafruit/Adafruit_NeoPixel) for more information specific to it.
