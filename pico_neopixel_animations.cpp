@@ -211,7 +211,6 @@ uint32_t NeoPixelStrip::propStepColor(
     uint32_t start, uint32_t finish, uint8_t min_step=2, uint8_t max_step=10
 ){
     //printf("pSC Start: %d, Finish: %d\n", start, finish);
-    //if (start == finish) { return start; }
     std::array<uint8_t, 3> unp_start = unpack(start);
     std::array<uint8_t, 3> unp_finish = unpack(finish);
     uint8_t start_R = unp_start[0];
@@ -500,21 +499,8 @@ void NeoPixelStrip::demo_loop() {
 
 // test_loop() function -- Demonstration of basic usage
 void NeoPixelStrip::test_loop() {
-    /*printf("Rainbows\n");
-    rainbow(10);
-    printf("Transition Single Pixel:%d, Start:%d, Finish:%d\n", pixelOrder[1], strip.getPixelColor(pixelOrder[1]), strip.Color(240, 0, 0));
-    propTransitionSingle(pixelOrder[1], strip.getPixelColor(pixelOrder[1]), strip.Color(240, 0, 0), 100);
-    printf("Transition All Green\n");
-    propTransitionAll(strip.Color(0, 255, 0), 100);
-    printf("Chase Rainbows\n");
-    theaterChaseRainbow(100);
-    printf("Transition All Red\n");
-    propTransitionAll(strip.Color(255, 0, 0), 100);
-    */
-
     // Test sequence for startup
     // Should fade in to Crimson/White
-    //interpretPixelOrder(pixelOrderString);
     printf("Fade In\n");
     propTransitionBrightness(140, 30);
     printf("Rainbow Marquee\n");
