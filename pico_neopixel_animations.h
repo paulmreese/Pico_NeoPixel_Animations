@@ -88,8 +88,6 @@ class NeoPixelStrip {
             strip.Color() */
         std::array<uint8_t, 3> unpack(uint32_t packed_val);
 
-        
-
         /* "Packs" 3 8-bit values into a single 32-bit RGB color */
         uint32_t packColor(uint8_t r_comp, uint8_t g_comp, uint8_t b_comp);
 
@@ -210,12 +208,9 @@ class NeoPixelStrip {
             frames. */
         void theaterChaseRainbow(int wait);
 
-        /* Endpoint functions intended to be interacted with by other projects */
+        /* Endpoint function intended to be interacted with by other projects. 
+           Transitions a single pixel to a new color*/
         void htmlSinglePixel(int pixel_num, uint32_t packed_color, int wait);
-
-        /* Respond to different effect indices and perform the appropriate
-           action. */
-        /*State_Settings_Struct& htmlEffect(int effect_index);*/
 
         /* Demonstration of basic usage */
         void demo_loop();
