@@ -33,14 +33,14 @@ nmake
 ````
 
 ## Code Setup
-NeoPixels may be connected to any GPIO pin. Once you are confident in the wiring and pin choices for your NeoPixel strand, you'll need to construct a NeoPixelStrip object to send instructions to, as shown:
+NeoPixels may be connected to any GPIO pin. Once you are confident in the wiring and pin choices for your NeoPixel strand, you'll need to construct a `NeoPixelStrip` object to send instructions to, as shown:
 1. Declare your LED pin, count(amount of LEDs), and pixel order. The `PIXEL_ORDER` defines the order the NeoPixels should follow, relative to the way they are electrically sequenced(The first NeoPixel of the electrical sequence would automatically be number "0", next is "1", etc.). **The string should terminate with a trailing space!!**
 ````
 uint16_t LED_PIN =  28;
 uint16_t LED_COUNT = 5;
 std::string PIXEL_ORDER = "3 2 1 0 4 ";
 ````
-2. Declare our NeoPixelStrip object(name `npStrip`):
+2. Declare our `NeoPixelStrip` object(name `npStrip`):
 ````
 NeoPixelStrip npStrip(LED_COUNT, LED_PIN, PIXEL_ORDER);
 ````
@@ -49,11 +49,16 @@ NeoPixelStrip npStrip(LED_COUNT, LED_PIN, PIXEL_ORDER);
 npStrip.test_loop();
 ````
 
-## Library documentation
-See the Adafruit Neopixel library documentation on the various resources.
+## Building examples
+The examples that work are `simple`, `strandtest_wheels` and ....
+for the owner of the Maker PI PICO board of Cytron the example `onboard_cytron` that gives a nice colorful show on the built in NeoPixel (a strand of length 1 on PIN 28).
 
-The examples that work are "simple", "strandtest_wheels" and ....
-for the owner of the Maker PI PICO board of Cytron the example "onboard_cytron" that gives a nice colorful show on the built in neopixel (a strand of length 1 on PIN 28).
+## Library documentation
+This section needs to be improved to include a general description of the types of functions offered by the library, as well as the specific functions that are available as animations.
+This library is intended to provide animation functions that are easy to access from an external project. The available functions fall generally into animation functions and their helper functions. An explanation of the purpose of each one is provided in the [header file of this project](pico_neopixel_animations.h)
+
+## Resources specific to the Adafruit Neopixel library
+See [the Adafruit Neopixel library documentation](https://github.com/adafruit/Adafruit_NeoPixel) for more information specific to it.
 
 ## Resources specific to the Adafruit Pi Pico port
 [The original repo](https://github.com/martinkooij/pi-pico-adafruit-neopixels) contains more specific implementation details.
