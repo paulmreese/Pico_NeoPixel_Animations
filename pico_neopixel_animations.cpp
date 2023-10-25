@@ -353,7 +353,7 @@ void NeoPixelStrip::altOppFadeHelper(
     while (transition_2 != color_1){
         for (int i=0; i<strip.numPixels(); i++){
             //even pixel
-            if (i % 2 == 0){
+            if (pixelOrder[i] % 2 == 0){
                 uint32_t nextStep = propStepColor(
                     transition_2, color_1, min_step, max_step
                 );
