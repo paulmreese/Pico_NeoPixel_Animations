@@ -86,8 +86,7 @@ NeoPixelStrip::State_Settings_Struct& NeoPixelStrip::accessState() {
     return currentStateStruct;
 }
 
-void NeoPixelStrip::syncStateWithVector() {
-    
+void NeoPixelStrip::syncStateWithVector() {  
     led_1 = pixelColors[pixelOrder[0]];
     led_2 = pixelColors[pixelOrder[1]];
     led_3 = pixelColors[pixelOrder[2]];
@@ -101,9 +100,13 @@ void NeoPixelStrip::updateStateColors() {
     std::vector<uint32_t> newPixelColors;
     // Sync Pixel Colors(returns undimmed value)
     for (int i=0; i<strip.numPixels(); i++) {
-        newPixelColors.push_back(strip.getPixelColor(i));
-        printf("pixelColor%d: %d newPixelColor%d: %d\n", 
+        for (int j=0; j<strip.numPixels(); j++) {
+            if (pixelOrder[j] == i) {
+                newPixelColors.push_back(strip.getPixelColor(j));
+                printf("pixelColor%d: %d newPixelColor%d: %d\n", 
                i, pixelColors[i], i, newPixelColors[i]);
+            }
+        }
     }
     newPixelColors.swap(pixelColors);
     syncStateWithVector();
@@ -476,7 +479,17 @@ void NeoPixelStrip::theaterChaseRainbow(int wait) {
 // Set a single pixel color. No return required as the parameters that set
 // the final values would be the ones used in the return.
 void NeoPixelStrip::htmlSinglePixel(int pixel_num, uint32_t packed_color, int wait) {
-    propTransitionSingle(pixelOrder[pixel_num], strip.getPixelColor(pixelOrder[pixel_num]), packed_color, wait);
+    for (int i=0; i<strip.numPixels(); i++) {
+        if (pixelOrder[i] == pixel_num) {
+            printf("Pixel #: %d, i: %d, pixelOrder[i]: %d\n", pixel_num, i, pixelOrder[i]);
+            propTransitionSingle(
+                i,
+                strip.getPixelColor(i),
+                packed_color,
+                wait
+            );
+        }
+    }
 }
 
 // demo_loop() function -- Demonstration of basic usage
