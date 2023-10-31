@@ -67,6 +67,17 @@ uint32_t NeoPixelStrip::packColor(
     return color;
 }
 
+uint16_t NeoPixelStrip::parseOrder(uint16_t value) {
+    uint16_t j;
+    for (int i=0; i<strip.numPixels(); i++) {
+        if (pixelOrder[i] == value) {
+            j = i;
+        }
+    }
+    //printf("pixelOrder Index: %d\n", j);
+    return j;
+}
+
 uint16_t NeoPixelStrip::parseSpeed(uint8_t speed){
     printf("Speed Parsing. Intial Value: %d\n", speed);
     uint16_t new_speed = uint16_t((101-speed));
@@ -87,11 +98,11 @@ NeoPixelStrip::State_Settings_Struct& NeoPixelStrip::accessState() {
 }
 
 void NeoPixelStrip::syncStateWithVector() {  
-    led_1 = pixelColors[pixelOrder[0]];
-    led_2 = pixelColors[pixelOrder[1]];
-    led_3 = pixelColors[pixelOrder[2]];
-    led_4 = pixelColors[pixelOrder[3]];
-    led_power = pixelColors[pixelOrder[4]];
+    led_1 = pixelColors[0];
+    led_2 = pixelColors[1];
+    led_3 = pixelColors[2];
+    led_4 = pixelColors[3];
+    led_power = pixelColors[4];
     printf("Pwr: %x led1: %x led2: %x led3: %x led4: %x\n",led_power, led_1, led_2, led_3, led_4);
 }
 
@@ -313,12 +324,12 @@ void NeoPixelStrip::propTransitionAll(uint32_t finish_color, uint16_t wait, uint
         
     while (current != finish){
         for (int i=0; i<strip.numPixels(); i++){
-            printf("Pixel: %d\n", pixelColors[i]);
-            printf("Current Color: %d\n", current[pixelOrder[i]]);
-            uint32_t next_step = propStepColor(current[pixelOrder[i]], finish_color, min_step, max_step);
-            strip.setPixelColor(pixelOrder[i], next_step);
-            current[pixelOrder[i]] = next_step;
-            printf("Next Color: %d\n", current[pixelOrder[i]]);
+            printf("Pixel: %d\n", pixelOrder[parseOrder(i)]);
+            printf("Current Color: %d\n", current[pixelOrder[parseOrder(i)]]);
+            uint32_t next_step = propStepColor(current[pixelOrder[parseOrder(i)]], finish_color, min_step, max_step);
+            strip.setPixelColor(pixelOrder[parseOrder(i)], next_step);
+            current[pixelOrder[parseOrder(i)]] = next_step;
+            printf("Next Color: %d\n", current[pixelOrder[parseOrder(i)]]);
         }
         strip.show();
         delay(wait);
@@ -356,18 +367,18 @@ void NeoPixelStrip::altOppFadeHelper(
     while (transition_2 != color_1){
         for (int i=0; i<strip.numPixels(); i++){
             //even pixel
-            if (pixelOrder[i] % 2 == 0){
+            if (pixelOrder[parseOrder(i)] % 2 == 0){
                 uint32_t nextStep = propStepColor(
                     transition_2, color_1, min_step, max_step
                 );
-                strip.setPixelColor(pixelOrder[i], nextStep);
+                strip.setPixelColor(pixelOrder[parseOrder(i)], nextStep);
             }
             //odd pixel
             else {
                 uint32_t nextStep = propStepColor(
                     transition_1, color_2, min_step, max_step
                 );
-                strip.setPixelColor(pixelOrder[i], nextStep);
+                strip.setPixelColor(pixelOrder[parseOrder(i)], nextStep);
             }
         }
         delay(wait);
@@ -399,7 +410,7 @@ void NeoPixelStrip::altOppFade(
 // and a delay time (in milliseconds) between pixels.
 void NeoPixelStrip::colorWipe(uint32_t color, int wait) {
     for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
-        strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
+        strip.setPixelColor(pixelOrder[parseOrder(i)], color);         //  Set pixel's color (in RAM)
         strip.show();                          //  Update strip to match
         delay(wait);                           //  Pause for a moment
     }
@@ -415,7 +426,7 @@ void NeoPixelStrip::theaterChase(uint32_t color, int wait) {
         strip.clear();         //   Set all pixels in RAM to 0 (off)
         // 'c' counts up from 'b' to end of strip in steps of 3...
         for(int c=b; c<strip.numPixels(); c += 3) {
-            strip.setPixelColor(c, color); // Set pixel 'c' to value 'color'
+            strip.setPixelColor(pixelOrder[parseOrder(c)], color); // Set pixel 'c' to value 'color'
         }
         strip.show(); // Update strip with new contents
         delay(wait);  // Pause for a moment
@@ -441,7 +452,7 @@ void NeoPixelStrip::rainbow(int wait){
         // Here we're using just the single-argument hue variant. The result
         // is passed through strip.gamma32() to provide 'truer' colors
         // before assigning to each pixel:
-        strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
+        strip.setPixelColor(pixelOrder[parseOrder(i)], strip.gamma32(strip.ColorHSV(pixelHue)));
         }
         strip.show(); // Update strip with new contents
         delay(wait);  // Pause for a moment
@@ -463,7 +474,7 @@ void NeoPixelStrip::theaterChaseRainbow(int wait) {
             // of the strip (strip.numPixels() steps):
             int      hue   = firstPixelHue + c * 65536L / strip.numPixels();
             uint32_t color = strip.gamma32(strip.ColorHSV(hue)); // hue -> RGB
-            strip.setPixelColor(c, color); // Set pixel 'c' to value 'color'
+            strip.setPixelColor(pixelOrder[parseOrder(c)], color); // Set pixel 'c' to value 'color'
         }
         strip.show();                // Update strip with new contents
         delay(wait);                 // Pause for a moment
