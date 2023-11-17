@@ -498,6 +498,8 @@ void NeoPixelStrip::theaterChaseRainbow(int wait) {
         firstPixelHue += 65536 / 90; // One cycle of color wheel over 90 frames
         }
     }
+    // fill all with color 1 afterwards to prevent only having one LED lit
+    strip.fill(effect_color_1);
     updateStateColors();
     effect_index = 2;
 }
