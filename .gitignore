@@ -2,3 +2,4 @@
 examples/build
 # Ignore system files
 .DS_Store
+.vscode
