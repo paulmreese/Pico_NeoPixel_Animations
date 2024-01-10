@@ -20,6 +20,7 @@ NeoPixelStrip::NeoPixelStrip(
     // without having to copy anything.
     // Argument 1 = Number of pixels in NeoPixel strip
     // Argument 2 = Pico pin number (most are valid)
+    // TODO: Add these options into the NeoPixelStrip constructor initialization
     // Argument 3 = Pixel type flags, add together as needed:
     //   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
     //   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
@@ -183,7 +184,8 @@ uint8_t NeoPixelStrip::adjustBrightness (uint8_t val) {
 // step size. This can be useful for brightness as well as color value.
 // Expects the values to be scaled to from 0-255 
 uint8_t NeoPixelStrip::propStep (
-    uint8_t start, uint8_t finish, uint8_t min_step=2, uint8_t max_step=10) {
+    uint8_t start, uint8_t finish, uint8_t min_step, uint8_t max_step
+) {
     uint8_t difference = 0;
     uint8_t new_value;
     //printf("pS Start: %d, Finish: %d\n", start, finish);
@@ -219,7 +221,7 @@ uint8_t NeoPixelStrip::propStep (
 
 // Applies the proportional step to an entire RGB color
 uint32_t NeoPixelStrip::propStepColor(
-    uint32_t start, uint32_t finish, uint8_t min_step=2, uint8_t max_step=10
+    uint32_t start, uint32_t finish, uint8_t min_step, uint8_t max_step
 ){
     //printf("pSC Start: %d, Finish: %d\n", start, finish);
     std::array<uint8_t, 3> unp_start = unpack(start);
@@ -262,7 +264,8 @@ void NeoPixelStrip::fadeBrightness(
             brightness = i ;
             //printf("Brightness: %d\n", brightness);
             strip.setBrightnessFunctions(
-                adjustBrightness, adjustBrightness, adjustBrightness, adjustBrightness
+                adjustBrightness, adjustBrightness,
+                adjustBrightness, adjustBrightness
             );
             strip.show() ;
             delay(wait);
@@ -275,7 +278,8 @@ void NeoPixelStrip::fadeBrightness(
             brightness = i ;
             //printf("Brightness: %d\n", brightness);
             strip.setBrightnessFunctions(
-                adjustBrightness, adjustBrightness, adjustBrightness, adjustBrightness
+                adjustBrightness, adjustBrightness,
+                adjustBrightness, adjustBrightness
             );
             strip.show() ;
             delay(wait);
@@ -284,56 +288,20 @@ void NeoPixelStrip::fadeBrightness(
     effect_index = 4;
 }
 
-// Function to fade from the current brightness down to 1
-void NeoPixelStrip::fadeOutBrightness(uint16_t wait
-){
-    int j=brightness;
-    //printf("FadeOutPreBrightness: %d, %d\n", j, brightness);
-    for (int i=brightness; i>34; i--) {
-        //printf("Fade I: %d\n", i);
-        i = uint8_t(i);
-        //printf("Fade IUint: %d\n", i);
-        brightness = i;
-        //printf("Brightness: %d\n", brightness);
-        strip.setBrightnessFunctions(
-            adjustBrightness, adjustBrightness, adjustBrightness, adjustBrightness
-        );
-        strip.show() ;
-        delay(wait);
-    }
-    effect_index = 5;
-}
-
-// Function specifically to fade in on time with the startup music of the 
-// GameCube
-void NeoPixelStrip::initialFadeIn() {
-    int j=brightness;
-    for (int i=1; i<=160; i++) {
-        //printf("Fade I: %d\n", i);
-        i = uint8_t(i);
-        //printf("Fade IUint: %d\n", i);
-        brightness = i ;
-        //printf("Brightness: %d\n", brightness);
-        strip.setBrightnessFunctions(
-            adjustBrightness, adjustBrightness, adjustBrightness, adjustBrightness
-        );
-        strip.show() ;
-        sleep_us(5625);
-    }
-}
-
 // Transitions a single pixel from start color to finish color, using a
 // step size between min_step and max_step, waiting wait milliseconds between
 // each step.
 void NeoPixelStrip::propTransitionSingle(
     uint16_t pixel, uint32_t start, uint32_t finish, uint16_t wait,
-    uint8_t min_step=2, uint8_t max_step=10
+    uint8_t min_step, uint8_t max_step
 ){
     uint32_t current = start;
     //printf("pTS Start: %d, Finish: %d\n", start, finish);
     while(current != finish) {
        
-        uint32_t next_color = propStepColor(current, finish, min_step, max_step);
+        uint32_t next_color = propStepColor(
+            current, finish, min_step, max_step
+        );
         //printf("Current: %d, Next: %d\n", current, next_color);
     	strip.setPixelColor(pixel, next_color);
         
@@ -344,23 +312,29 @@ void NeoPixelStrip::propTransitionSingle(
     updateStateColors();
 }
 
-void NeoPixelStrip::propTransitionAll(uint32_t finish_color, uint16_t wait, uint8_t min_step, uint8_t max_step){
+void NeoPixelStrip::propTransitionAll(
+    uint32_t finish_color, uint16_t wait, uint8_t min_step, uint8_t max_step
+){
+    //Store transitional and finish values
     std::vector<uint32_t> current(strip.numPixels(), 1), finish(strip.numPixels(), 1);
-    printf("checked state: #%x #%x #%x #%x #%x\n", led_power, led_1, led_2, led_3, led_4);
+    //printf("checked state: #%x #%x #%x #%x #%x\n", led_power, led_1, led_2, led_3, led_4);
     for (int pixel = 0; pixel<strip.numPixels(); pixel++) {
-        printf("got pixel color: %x\n", strip.getPixelColor(pixel));
+        //printf("got pixel color: %x\n", strip.getPixelColor(pixel));
         current[pixel] = strip.getPixelColor(pixel);
         finish[pixel] = finish_color;
     }
         
     while (current != finish){
         for (int i=0; i<strip.numPixels(); i++){
-            printf("Pixel: %d\n", pixelOrder[parseOrder(i)]);
-            printf("Current Color: %d\n", current[pixelOrder[parseOrder(i)]]);
-            uint32_t next_step = propStepColor(current[pixelOrder[parseOrder(i)]], finish_color, min_step, max_step);
+            //printf("Pixel: %d\n", pixelOrder[parseOrder(i)]);
+            //printf("Current Color: %d\n", current[pixelOrder[parseOrder(i)]]);
+            uint32_t next_step = propStepColor(
+                current[pixelOrder[parseOrder(i)]], finish_color,
+                min_step, max_step
+            );
             strip.setPixelColor(pixelOrder[parseOrder(i)], next_step);
             current[pixelOrder[parseOrder(i)]] = next_step;
-            printf("Next Color: %d\n", current[pixelOrder[parseOrder(i)]]);
+            //printf("Next Color: %d\n", current[pixelOrder[parseOrder(i)]]);
         }
         strip.show();
         delay(wait);
@@ -380,7 +354,8 @@ void NeoPixelStrip::propTransitionBrightness(
         brightness = next;
         current = next;
         strip.setBrightnessFunctions(
-            adjustBrightness, adjustBrightness, adjustBrightness, adjustBrightness
+            adjustBrightness, adjustBrightness, 
+            adjustBrightness, adjustBrightness
         );
         strip.show();
         delay(wait);
@@ -414,14 +389,19 @@ void NeoPixelStrip::altOppFadeHelper(
         }
         delay(wait);
         strip.show();
-        transition_1 = propStepColor(transition_1, color_2, min_step, max_step);
-        transition_2 = propStepColor(transition_2, color_1, min_step, max_step);
+        transition_1 = propStepColor(
+            transition_1, color_2, min_step, max_step
+        );
+        transition_2 = propStepColor(
+            transition_2, color_1, min_step, max_step
+        );
     }
 }
 
 // Fades between two opposing colors for a given number of repetitions
 void NeoPixelStrip::altOppFade(
-    uint32_t color_1, uint32_t color_2, uint8_t repetitions, uint16_t wait, uint8_t min_step, uint8_t max_step
+    uint32_t color_1, uint32_t color_2, uint8_t repetitions,
+    uint16_t wait, uint8_t min_step, uint8_t max_step
 ){
     for (int i=0; i<repetitions; i++){
         if (i % 2 == 0){
@@ -534,6 +514,91 @@ void NeoPixelStrip::htmlSinglePixel(int pixel_num, uint32_t packed_color, int wa
                 wait
             );
         }
+    }
+}
+
+// GameCube specific functions
+
+// Function that sets the power light to a different color than the ports
+// (GameCube related)
+void NeoPixelStrip::setPortsAndPower(
+    uint32_t color_1, uint32_t color_2, uint16_t wait, 
+    uint8_t min_step, uint8_t max_step
+){
+    // Store transitional and finish values
+    std::vector<uint32_t> current(strip.numPixels(), 1),
+                          finish(strip.numPixels(), 1);
+    // The last pixel should be the power_led
+    int last_pixel_num = strip.numPixels() - 1;
+    // Assign opposite finish colors
+    for (int pixel = 0; pixel<strip.numPixels(); pixel++) {
+        current[pixel] = strip.getPixelColor(pixel);
+        if (pixelOrder[pixel] == last_pixel_num) {
+            finish[pixel] = color_1;
+        } else {
+            finish[pixel] = color_2;
+        }
+    }
+    while (current != finish) {
+        for (int pixel = 0; pixel<strip.numPixels(); pixel++) {
+            if (pixelOrder[pixel] == last_pixel_num) {
+                uint32_t next_step = propStepColor(
+                    current[pixelOrder[parseOrder(pixel)]], color_1,
+                    min_step, max_step
+                );
+                strip.setPixelColor(
+                    pixelOrder[parseOrder(pixel)], next_step
+                );
+                current[pixelOrder[parseOrder(pixel)]] = next_step;
+            } else {
+                uint32_t next_step = propStepColor(
+                    current[pixelOrder[parseOrder(pixel)]], color_2,
+                    min_step, max_step
+                );
+                strip.setPixelColor(
+                    pixelOrder[parseOrder(pixel)], next_step
+                );
+                current[pixelOrder[parseOrder(pixel)]] = next_step;
+            }
+        }
+        strip.show();
+        delay(wait);
+    }
+}
+
+// Function that alternates the power light and port colors
+// (GameCube related)
+void NeoPixelStrip::altOppPortsAndPower(
+    uint32_t color_1, uint32_t color_2, uint8_t repetitions,
+    uint16_t wait, uint8_t min_step, uint8_t max_step
+){
+    for (int i=0; i<repetitions; i++){
+        if (i % 2 == 0){
+            setPortsAndPower(color_2, color_1, wait, min_step, max_step);
+        } else {
+            setPortsAndPower(color_1, color_2, wait, min_step, max_step);
+        }
+    }
+    updateStateColors();
+    effect_index = 5;
+}
+
+// Function specifically to fade in before the startup music of the 
+// GameCube
+void NeoPixelStrip::initialFadeIn() {
+    int j=brightness;
+    for (int i=1; i<=160; i++) {
+        //printf("Fade I: %d\n", i);
+        i = uint8_t(i);
+        //printf("Fade IUint: %d\n", i);
+        brightness = i ;
+        //printf("Brightness: %d\n", brightness);
+        strip.setBrightnessFunctions(
+            adjustBrightness, adjustBrightness, 
+            adjustBrightness, adjustBrightness
+        );
+        strip.show() ;
+        sleep_us(5625);
     }
 }
 

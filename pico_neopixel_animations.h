@@ -134,33 +134,29 @@ class NeoPixelStrip {
         uint8_t propStep (
             uint8_t start,
             uint8_t finish,
-            uint8_t min_step,
-            uint8_t max_step
+            uint8_t min_step = 2,
+            uint8_t max_step = 10
         );
 
         /* Applies the propStep function to an entire RGB color */
         uint32_t propStepColor(
             uint32_t start,
             uint32_t finish,
-            uint8_t min_step,
-            uint8_t max_step
+            uint8_t min_step = 2,
+            uint8_t max_step = 10
         );
 
-        /* Function to fade from the current brightness up to the given value */
+        /* Function to fade from the current brightness to the given value */
         void fadeBrightness(uint8_t brightnessLevel, uint16_t wait = 50);
-
-        /* Function time specifically to fade in before the startup music of 
-           the GameCube */
-        void initialFadeIn();
 
         /* Transitions a single pixel from start color to finish color */
         void propTransitionSingle(
             uint16_t pixel,
             uint32_t start,
             uint32_t finish,
-            uint16_t wait,
-            uint8_t min_step,
-            uint8_t max_step
+            uint16_t wait = 50,
+            uint8_t min_step = 2,
+            uint8_t max_step = 10
         );
 
         /* Transitions all pixels from start color to finish color */
@@ -197,7 +193,6 @@ class NeoPixelStrip {
             uint16_t wait = 50,
             uint8_t min_step = 2,
             uint8_t max_step = 10
-            
         );
 
         /* Fill strip pixels one after another with a color. */
@@ -218,6 +213,31 @@ class NeoPixelStrip {
            Transitions a single pixel to a new color */
         void htmlSinglePixel(int pixel_num, uint32_t packed_color, int wait);
 
+        /* Function that sets the power light to a different color than the 
+           ports on the GameCube */
+        void setPortsAndPower(
+            uint32_t color_1,
+            uint32_t color_2,
+            uint16_t wait = 50,
+            uint8_t min_step = 2,
+            uint8_t max_step = 10
+        );
+
+        /*  Function that alternates the power light and port colors of the 
+            Gamecube */
+        void altOppPortsAndPower(
+            uint32_t color_1,
+            uint32_t color_2,
+            uint8_t repetitions = 3,
+            uint16_t wait = 50,
+            uint8_t min_step = 2,
+            uint8_t max_step = 10
+        );
+
+        /* Function specifically to fade in before the startup music of 
+           the GameCube */
+        void initialFadeIn();
+        
         /* Startup animation synced with the GameCube startup song */
         void gameCubeStartUp();
 
