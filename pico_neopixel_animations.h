@@ -147,10 +147,7 @@ class NeoPixelStrip {
         );
 
         /* Function to fade from the current brightness up to the given value */
-        void fadeInBrightness(uint8_t brightnessLevel, uint16_t wait = 50);
-
-        /* Function to fade from the current brightness down to 1 */
-        void fadeOutBrightness(uint16_t wait = 50);
+        void fadeBrightness(uint8_t brightnessLevel, uint16_t wait = 50);
 
         /* Function time specifically to fade in before the startup music of 
            the GameCube */

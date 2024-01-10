@@ -249,7 +249,7 @@ uint32_t NeoPixelStrip::propStepColor(
 
 // Function to fade from the current brightness up to the given value
 
-void NeoPixelStrip::fadeInBrightness(
+void NeoPixelStrip::fadeBrightness(
     uint8_t brightnessLevel, uint16_t wait
 ){
     int j=brightness;
@@ -612,7 +612,7 @@ void NeoPixelStrip::gameCubeStartUp(){
     // );
     strip.fill(strip.ColorHSV(strip.Color(0, 0, 0), 0, 240)); // brighter white
     strip.show();
-    fadeInBrightness(100, 20);
+    fadeBrightness(100, 20);
     propTransitionAll(strip.Color(84, 107, 222), 20);
     effect_index=0;
     //updateStateColors();
